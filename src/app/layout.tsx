@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Navbar from '@/components/Navbar'
 
 const hindSiliguri = Hind_Siliguri({
   weight: ["300", "400", "500", "600", "700"],
@@ -23,7 +24,8 @@ export default function RootLayout({
     <html lang="bn" data-theme="light" className="scroll-smooth">
       <body className={`${hindSiliguri.className} antialiased`}>
         <Toaster position="top-right" />
-        {children}
+        <Navbar />
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );
