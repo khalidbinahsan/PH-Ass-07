@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { signUp, signIn } from "@/lib/auth-client";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -34,13 +35,27 @@ export default function SignUpPage() {
 
     try {
       setLoading(true);
-      // TODO: Connect BetterAuth authClient.signUp.email({ name, email, password })
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const { data, error } = await signUp.email({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        callbackURL: "/",
+      });
 
-      toast.success("অ্যাকাউন্ট তৈরি সফল হয়েছে! সাইন ইন করুন।");
-      router.push("/signin");
+      if (error) {
+        const msg = error.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
+
+      if (data) {
+        toast.success("অ্যাকাউন্ট তৈরি সফল হয়েছে!");
+        router.push("/");
+        router.refresh();
+      }
     } catch (err: any) {
-      const msg = err?.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
+      const msg = err?.message || "সার্ভারে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
       setErrorMsg(msg);
       toast.error(msg);
     } finally {
@@ -51,19 +66,23 @@ export default function SignUpPage() {
   const handleSocialLogin = async (provider: "google" | "github") => {
     try {
       setLoading(true);
-      toast.success(
-        `${provider === "google" ? "Google" : "GitHub"} দিয়ে লগইন সফল হয়েছে!`
-      );
-      router.push("/");
+      const { error } = await signIn.social({
+        provider,
+        callbackURL: "/",
+      });
+      if (error) {
+        toast.error(error.message || "সোশ্যাল লগইন ব্যর্থ হয়েছে।");
+        setLoading(false);
+      }
     } catch {
       toast.error("সোশ্যাল লগইন ব্যর্থ হয়েছে।");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16 flex flex-col items-center justify-center">
+      {/* Top Heading & Subtitle */}
       <div className="text-center mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           সাইন আপ
@@ -72,6 +91,8 @@ export default function SignUpPage() {
           বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে নতুন অ্যাকাউন্ট খুলুন।
         </p>
       </div>
+
+      {/* Main White Card */}
       <div className="w-full max-w-[420px] bg-white rounded-2xl border border-gray-200/80 p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         {errorMsg && (
           <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium">
@@ -80,7 +101,7 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleRegister} className="space-y-4">
-
+          {/* Name Field */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5">
               নাম
@@ -94,6 +115,7 @@ export default function SignUpPage() {
             />
           </div>
 
+          {/* Email Field */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5">
               ইমেইল
@@ -107,7 +129,7 @@ export default function SignUpPage() {
             />
           </div>
 
-
+          {/* Password Field */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5">
               পাসওয়ার্ড
@@ -121,6 +143,7 @@ export default function SignUpPage() {
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -131,6 +154,7 @@ export default function SignUpPage() {
           </button>
         </form>
 
+        {/* Divider */}
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
@@ -140,7 +164,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
-
+        {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
@@ -180,6 +204,7 @@ export default function SignUpPage() {
           </button>
         </div>
 
+        {/* Bottom Switch Link */}
         <p className="text-center text-xs text-gray-500 mt-5">
           ইতিমধ্যে অ্যাকাউন্ট আছে?{" "}
           <Link
@@ -191,7 +216,7 @@ export default function SignUpPage() {
         </p>
       </div>
 
-
+      {/* Back to Home Link */}
       <Link
         href="/"
         className="mt-6 text-xs text-gray-500 hover:text-gray-800 transition flex items-center gap-1"

@@ -1,11 +1,4 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-export async function getAllCategories() {
-  const res = await fetch(`${BASE_URL}/api/bazardor/categories`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Failed to fetch categories");
-  return res.json();
-}
 
 export async function getCategoryBySlug(slug: string) {
   const res = await fetch(`${BASE_URL}/api/bazardor/categories/${slug}`, {
@@ -15,14 +8,35 @@ export async function getCategoryBySlug(slug: string) {
   return res.json();
 }
 
-export async function getAllProducts() {
-  const res = await fetch(`${BASE_URL}/api/bazardor/products`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Failed to fetch products");
-  return res.json();
+
+export async function getAllCategories() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/bazardor/categories`, {
+      next: { revalidate: 60 }, // Cache for 60 seconds instead of uncached no-store
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return Array.isArray(json) ? json : json?.data || json?.categories || [];
+  } catch (err) {
+    console.error("Categories fetch error:", err);
+    return [];
+  }
 }
 
+export async function getAllProducts() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/bazardor/products`, {
+      next: { revalidate: 60 }, // Prevents blocking prerender errors on static/auth routes
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    if (Array.isArray(json)) return json;
+    return json?.data || json?.products || json?.result || [];
+  } catch (err) {
+    console.error("Products fetch error:", err);
+    return [];
+  }
+}
 export async function getProductsByCategory(categorySlug: string) {
   const res = await fetch(
     `${BASE_URL}/api/bazardor/products?category=${categorySlug}`,

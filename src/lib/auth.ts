@@ -2,8 +2,11 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/bazardor";
-const dbName = process.env.MONGODB_DB_NAME || "bazardor";
+const uri = process.env.MONGODB_URI;
+
+if (!uri) {
+  throw new Error("Please add MONGODB_URI to your .env.local file");
+}
 
 const globalForMongo = globalThis as unknown as {
   mongoClient?: MongoClient;
@@ -15,10 +18,12 @@ if (process.env.NODE_ENV !== "production") {
   globalForMongo.mongoClient = client;
 }
 
-const db = client.db(dbName);
+const db = client.db(process.env.MONGODB_DB_NAME || "bazardor");
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(db, {
+    client,
+  }),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,

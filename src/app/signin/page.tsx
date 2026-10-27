@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { signIn } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -33,12 +34,24 @@ export default function SignInPage() {
 
     try {
       setLoading(true);
-      // TODO: Connect BetterAuth authClient.signIn.email({ email, password })
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const { data, error } = await signIn.email({
+        email: email.trim(),
+        password,
+        callbackURL: "/",
+      });
 
-      toast.success("সফলভাবে সাইন ইন হয়েছে!");
-      router.push("/");
-      router.refresh();
+      if (error) {
+        const msg = "ইমেইল বা পাসওয়ার্ড সঠিক নয়।";
+        setErrorMsg(msg);
+        toast.error(msg);
+        return;
+      }
+
+      if (data) {
+        toast.success("সফলভাবে সাইন ইন হয়েছে!");
+        router.push("/");
+        router.refresh();
+      }
     } catch (err: any) {
       const msg = err?.message || "সাইন ইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
       setErrorMsg(msg);
@@ -51,20 +64,23 @@ export default function SignInPage() {
   const handleSocialLogin = async (provider: "google" | "github") => {
     try {
       setLoading(true);
-      // TODO: Connect BetterAuth authClient.signIn.social({ provider, callbackURL: "/" })
-      toast.success(
-        `${provider === "google" ? "Google" : "GitHub"} দিয়ে লগইন সফল হয়েছে!`
-      );
-      router.push("/");
+      const { error } = await signIn.social({
+        provider,
+        callbackURL: "/",
+      });
+      if (error) {
+        toast.error(error.message || "সোশ্যাল লগইন ব্যর্থ হয়েছে।");
+        setLoading(false);
+      }
     } catch {
       toast.error("সোশ্যাল লগইন ব্যর্থ হয়েছে।");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16 flex flex-col items-center justify-center">
+      {/* Top Heading & Subtitle */}
       <div className="text-center mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           সাইন ইন
@@ -74,6 +90,7 @@ export default function SignInPage() {
         </p>
       </div>
 
+      {/* Main White Card */}
       <div className="w-full max-w-[420px] bg-white rounded-2xl border border-gray-200/80 p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         {errorMsg && (
           <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium">
@@ -82,6 +99,7 @@ export default function SignInPage() {
         )}
 
         <form onSubmit={handleSignIn} className="space-y-4">
+          {/* Email Field */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5">
               ইমেইল
@@ -94,6 +112,8 @@ export default function SignInPage() {
               className="w-full px-3.5 py-2.5 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#1E8E3E] transition"
             />
           </div>
+
+          {/* Password Field */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5">
               পাসওয়ার্ড
@@ -107,6 +127,7 @@ export default function SignInPage() {
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -116,6 +137,8 @@ export default function SignInPage() {
             সাইন ইন
           </button>
         </form>
+
+        {/* Divider */}
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
@@ -125,6 +148,7 @@ export default function SignInPage() {
           </div>
         </div>
 
+        {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
@@ -163,6 +187,8 @@ export default function SignInPage() {
             <span>GitHub দিয়ে চালিয়ে যান</span>
           </button>
         </div>
+
+        {/* Bottom Switch Link */}
         <p className="text-center text-xs text-gray-500 mt-5">
           অ্যাকাউন্ট নেই?{" "}
           <Link
@@ -173,6 +199,8 @@ export default function SignInPage() {
           </Link>
         </p>
       </div>
+
+      {/* Back to Home Link */}
       <Link
         href="/"
         className="mt-6 text-xs text-gray-500 hover:text-gray-800 transition flex items-center gap-1"
