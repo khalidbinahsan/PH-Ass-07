@@ -1,39 +1,35 @@
 import React from "react";
 import Link from "next/link";
-import { toBanglaNumber } from "@/utils/bangla";
-
+import { toBanglaNumber, formatUnitBangla } from "@/utils/bangla";
+export interface ProductChange {
+  dir: "up" | "down" | "flat" | string;
+  pct: number;
+}
 export interface ProductCardProps {
   id: string | number;
   slug?: string;
-  name: string;
-  emoji: string;
+  nameBn: string;
+  image: string;
   unit: string;
-  price: number | string;
-  change: number | string;
-  trend?: "up" | "down" | "flat";
+  today: number | string;
+  change: ProductChange;
 }
 
 export default function ProductCard({
   id,
   slug,
-  name,
-  emoji,
+  nameBn,
+  image,
   unit,
-  price,
+  today,
   change,
-  trend,
 }: ProductCardProps) {
   const numericChange =
-    typeof change === "number" ? change : parseFloat(String(change));
-  const resolvedTrend =
-    trend ||
-    (numericChange > 0 ? "up" : numericChange < 0 ? "down" : "flat");
+    typeof change?.pct === "number" ? change.pct : parseFloat(String(change.pct));
+ 
+  const formattedChange = `${toBanglaNumber(Math.abs(numericChange || 0).toFixed(1), false)}%`;
 
-  const formattedChange = String(change).includes("%")
-    ? String(change)
-    : `${toBanglaNumber(Math.abs(numericChange || 0).toFixed(1), false)}%`;
-
-  const formattedUnit = unit.startsWith("প্রতি") ? unit : `প্রতি ${unit}`;
+  const displayUnit = `প্রতি ${formatUnitBangla(unit)}`;
 
   return (
     <Link
@@ -42,13 +38,13 @@ export default function ProductCard({
     >
       <div className="flex items-center gap-3.5 mb-5">
         <div className="w-12 h-12 rounded-xl bg-[#F2F5F2] flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-          {emoji}
+          {image}
         </div>
         <div>
           <h3 className="text-base sm:text-[17px] font-bold text-gray-900 group-hover:text-[#1E8E3E] transition-colors leading-snug">
-            {name}
+            {nameBn}
           </h3>
-          <p className="text-xs text-gray-500 mt-0.5">{formattedUnit}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{displayUnit}</p>
         </div>
       </div>
 
@@ -56,15 +52,15 @@ export default function ProductCard({
         <div>
           <p className="text-xs text-gray-500 mb-0.5">আজকের দাম</p>
           <p className="text-xl sm:text-[22px] font-bold text-gray-900 leading-none">
-            {toBanglaNumber(price)}{" "}
+            {toBanglaNumber(today)}{" "}
             <span className="text-sm font-medium text-gray-700">টাকা</span>
           </p>
         </div>
-        {resolvedTrend === "up" ? (
+        {change.dir === "up" ? (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F3F4F3] text-[#DC2626]">
             ▲ {formattedChange}
           </span>
-        ) : resolvedTrend === "down" ? (
+        ) : change.dir === "down" ? (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F0F7F2] text-[#15803D]">
             ▼ {formattedChange}
           </span>

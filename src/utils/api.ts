@@ -32,7 +32,6 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getProductByIdOrSlug(idOrSlug: string) {
-  // First try direct endpoint /api/bazardor/products/[id]
   const res = await fetch(`"https://openapi.programming-hero.com/api/bazardor/products/${idOrSlug}`, {
     cache: "no-store",
   });

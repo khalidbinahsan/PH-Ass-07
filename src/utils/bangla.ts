@@ -38,3 +38,27 @@ export function getTodayBanglaDate(): string {
     return "সোমবার, ২৬ অক্টোবর ২০২৬";
   }
 }
+
+export function formatUnitBangla(unit: string, unitBn?: string): string {
+  if (unitBn) {
+    return unitBn.startsWith("প্রতি") ? unitBn : `প্রতি ${unitBn}`;
+  }
+
+  const unitMap: Record<string, string> = {
+    kg: "কেজি",
+    litre: "লিটার",
+    liter: "লিটার",
+    dozen: "ডজন",
+    piece: "পিস",
+    pcs: "পিস",
+    packet: "প্যাকেট",
+    gm: "গ্রাম",
+  };
+
+  const cleanUnit = unit?.toLowerCase().trim() || "";
+  if (unitMap[cleanUnit]) {
+    return unitMap[cleanUnit];
+  }
+
+  return unit?.startsWith("প্রতি") ? unit : `প্রতি ${unit}`;
+}
