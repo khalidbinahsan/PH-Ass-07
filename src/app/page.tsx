@@ -20,6 +20,17 @@ const FALLERS_PRODUCTS: ProductCardProps[] = [
   { id: 11, name: "হাঁসের মাংস", emoji: "🦆", unit: "প্রতি কেজি", price: "২৮৫", change: "৩.৪%", trend: "down" },
   { id: 12, name: "খাসির মাংস", emoji: "🍖", unit: "প্রতি কেজি", price: "১,২৯০", change: "৩.০%", trend: "down" },
 ];
+
+const ALL_PRODUCTS: ProductCardProps[] = [
+  { id: 13, name: "স্বর্ণমাছি চাল", emoji: "🍚", unit: "প্রতি কেজি", price: "১৪৮", change: "২.১%", trend: "up" },
+  { id: 14, name: "মিনিকেট চাল", emoji: "🍚", unit: "প্রতি কেজি", price: "৯৯", change: "২.৯%", trend: "down" },
+  { id: 15, name: "নাজির চাল", emoji: "🍚", unit: "প্রতি কেজি", price: "৭৪", change: "০.০%", trend: "flat" },
+  { id: 16, name: "বাটাম সাইজ চাল", emoji: "🍚", unit: "প্রতি কেজি", price: "৬৬", change: "৩.১%", trend: "up" },
+  { id: 17, name: "মসুর ডাল", emoji: "🫘", unit: "প্রতি কেজি", price: "১৪২", change: "২.৯%", trend: "up" },
+  { id: 18, name: "মুগ ডাল", emoji: "🫘", unit: "প্রতি কেজি", price: "১৬৫", change: "১.২%", trend: "down" },
+  ...RISERS_PRODUCTS,
+  ...FALLERS_PRODUCTS,
+];
 export default function HomePage() {
   return (
     <div className="pb-16 space-y-10">
@@ -48,6 +59,22 @@ export default function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FALLERS_PRODUCTS.map((item) => (
             <ProductCard key={item.id} {...item} />
+          ))}
+        </div>
+      </section>
+
+      <section id="সব-পণ্য" className="max-w-6xl mx-auto px-4 scroll-mt-36">
+        <div className="mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+            সব পণ্য
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            মোট {toBanglaNumber(33)}টি পণ্য দেখানো হচ্ছে
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ALL_PRODUCTS.map((item, idx) => (
+            <ProductCard key={`${item.id}-${idx}`} {...item} />
           ))}
         </div>
       </section>
