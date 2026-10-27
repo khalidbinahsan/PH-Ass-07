@@ -27,7 +27,7 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {raiserProducts.length > 0 ? (
-            raiserProducts.slice(0, 6).map((item) => (
+            raiserProducts.map((item) => (
               <ProductCard key={item.id} {...item} />
             ))
           ) : (
@@ -44,9 +44,13 @@ export default async function HomePage() {
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {downProducts.map((item) => (
-            <ProductCard key={item.id} {...item} />
-          ))}
+          {downProducts.length > 0 ? (
+            downProducts.map((item) => (
+              <ProductCard key={item.id} {...item} />
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 col-span-full">কোনো তথ্য পাওয়া যায়নি</p>
+          )}
         </div>
       </section>
 
@@ -56,7 +60,7 @@ export default async function HomePage() {
             সব পণ্য
           </h2>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            মোট {toBanglaNumber(33)}টি পণ্য দেখানো হচ্ছে
+            মোট {toBanglaNumber(allProducts.length)}টি পণ্য দেখানো হচ্ছে
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

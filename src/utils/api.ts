@@ -1,5 +1,6 @@
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 export async function getAllCategories() {
-  const res = await fetch("https://openapi.programming-hero.com/api/bazardor/categories", {
+  const res = await fetch(`${BASE_URL}/api/bazardor/categories`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch categories");
@@ -7,7 +8,7 @@ export async function getAllCategories() {
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/categories/${slug}`, {
+  const res = await fetch(`${BASE_URL}/api/bazardor/categories/${slug}`, {
     cache: "no-store",
   });
   if (!res.ok) return null;
@@ -15,7 +16,7 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 export async function getAllProducts() {
-  const res = await fetch("https://openapi.programming-hero.com/api/bazardor/products", {
+  const res = await fetch(`${BASE_URL}/api/bazardor/products`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch products");
@@ -24,7 +25,7 @@ export async function getAllProducts() {
 
 export async function getProductsByCategory(categorySlug: string) {
   const res = await fetch(
-    `"https://openapi.programming-hero.com/api/bazardor/products?category=${categorySlug}`,
+    `${BASE_URL}/api/bazardor/products?category=${categorySlug}`,
     { cache: "no-store" }
   );
   if (!res.ok) return [];
@@ -32,7 +33,7 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getProductByIdOrSlug(idOrSlug: string) {
-  const res = await fetch(`"https://openapi.programming-hero.com/api/bazardor/products/${idOrSlug}`, {
+  const res = await fetch(`${BASE_URL}/api/bazardor/products/${idOrSlug}`, {
     cache: "no-store",
   });
   if (res.ok) {
