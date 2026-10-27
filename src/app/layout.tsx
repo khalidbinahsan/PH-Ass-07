@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="bn" data-theme="light" className="scroll-smooth">
-      <body className={`${hindSiliguri.className} antialiased`}>
+      <body className={`${hindSiliguri.className} antialiased bg-[#F0F5F0]`}>
         <Toaster position="top-right" />
         <Navbar />
         <main className="flex-1">{children}</main>
