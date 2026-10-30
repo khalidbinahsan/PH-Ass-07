@@ -13,6 +13,8 @@ export interface ProductCardProps {
   unit: string;
   today: number | string;
   change: ProductChange;
+  categoryNameBn?: string;
+  categoryIcon?: string;
 }
 
 export default function ProductCard({
