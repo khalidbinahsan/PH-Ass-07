@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { getTodayBanglaDate, toBanglaNumber, formatUnitBangla } from "@/utils/bangla";
 import { getAllCategories, getAllProducts } from "@/utils/api";
+import UserMenu from "@/components/UserMenu";
 
 export default async function Navbar() {
   const [categoriesRes, productsRes] = await Promise.all([
@@ -17,8 +18,6 @@ export default async function Navbar() {
     ? productsRes
     : productsRes?.data || productsRes?.products || [];
   const tickerProducts = products.slice(0, 33);
-
-  const user = null; 
 
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -37,26 +36,7 @@ export default async function Navbar() {
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
-          {user ? (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-800">প্রোফাইল</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/signin"
-                className="px-3.5 py-1.5 text-sm font-medium text-gray-700 hover:text-[#1E8E3E] border border-gray-300 rounded-lg hover:border-[#1E8E3E] transition"
-              >
-                সাইন ইন
-              </Link>
-              <Link
-                href="/signup"
-                className="px-3.5 py-1.5 text-sm font-medium text-white bg-[#1E8E3E] hover:bg-[#187732] rounded-lg transition shadow-xs"
-              >
-                সাইন আপ
-              </Link>
-            </div>
-          )}
+          <UserMenu />
         </div>
       </div>
       <nav className="border-t border-gray-100 bg-white">
