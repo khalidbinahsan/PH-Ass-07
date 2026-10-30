@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { getTodayBanglaDate, toBanglaNumber, formatUnitBangla } from "@/utils/bangla";
+import { toBanglaNumber, formatUnitBangla } from "@/utils/bangla";
+import TodayDate from "@/components/TodayDate";
 import { getAllCategories, getAllProducts } from "@/utils/api";
 import UserMenu from "@/components/UserMenu";
 
@@ -31,7 +32,7 @@ export default async function Navbar() {
               বাজার দর
             </h1>
             <p className="text-xs text-gray-500 mt-0.5">
-              {getTodayBanglaDate()}
+              <TodayDate />
             </p>
           </div>
         </Link>

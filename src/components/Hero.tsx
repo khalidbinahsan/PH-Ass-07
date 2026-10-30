@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { getTodayBanglaDate } from "@/utils/bangla";
+import TodayDate from "@/components/TodayDate";
 
 export default function Hero() {
   return (
@@ -8,7 +8,7 @@ export default function Hero() {
       <div className="bg-white rounded-2xl border border-gray-200/80 p-6 sm:p-10 md:px-12 md:py-11 flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
         <div className="max-w-xl text-center md:text-left flex flex-col items-center md:items-start">
           <span className="inline-block bg-[#E8F5E9] text-[#1E8E3E] text-xs sm:text-sm font-medium px-3.5 py-1 rounded-full mb-4">
-            {getTodayBanglaDate()}
+            <TodayDate />
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight leading-snug mb-3.5">
             আজকের বাজারের দাম এক নজরে
